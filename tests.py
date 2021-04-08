@@ -1,5 +1,5 @@
 import unittest
-from checkboxer.models import Users
+from checkboxer.models import User
 from unittest import TestCase
 from config import Config
 from checkboxer import app, db
@@ -20,7 +20,7 @@ class UserModelTests(TestCase):
 
 
     def test_password_hashing(self):
-        u = Users(user_name='test')
+        u = User(user_name='test')
         u.set_password('`123456')
         self.assertFalse(u.check_assword('asdf'))
         self.assertTrue((u.check_assword('`123456')))
