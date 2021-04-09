@@ -1,0 +1,19 @@
+       <form action="" method="post" novalidate>
+
+               <p> {% for x in form %}
+                    {% if x == form.submit %}
+                    {% continue %}
+                   {% endif %}
+                   {% if x.label == form.hidden_tag() %}
+                    {% break %}
+                   {% endif %}
+                {{ x() }}  {{ x.label }}<br>
+                {% endfor %}
+                </p>
+            <p>
+                {{  form.submit}}
+            </p>
+            </form>
+
+user_checkboxers = Checkboxlist.query.filter_by(user_id=user.id).all()
+form = checkbox_list_form_builder(user_checkboxers)

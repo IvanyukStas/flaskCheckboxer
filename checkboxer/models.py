@@ -1,9 +1,10 @@
+from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from checkboxer import db
+from checkboxer import db, login
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     id: int = db.Column(db.Integer, primary_key=True)
     user_name: str = db.Column(db.String(64), index=True, unique=True)
     password_hash: str = db.Column(db.String(128))
@@ -21,6 +22,11 @@ class User(db.Model):
        return check_password_hash(self.password_hash, password)
 
 
+@login.user_loader
+def load_user(id):
+    return User.query.get(int(id))
+
+
 class Checkboxlist(db.Model):
     id: int = db.Column(db.Integer, primary_key=True)
     checkbox_list_title: str = db.Column(db.String(128), index=True)
@@ -29,7 +35,7 @@ class Checkboxlist(db.Model):
     checkbox = db.relationship('Checkbox', backref='user_checkboxer', lazy='dynamic')
 
     def __repr__(self):
-        return f'Checkbox: <{self.checkbox_title}>'
+        return f'Checkbox: <{self.checkbox_list_title}>'
 
 
 class Checkbox(db.Model):
@@ -41,3 +47,5 @@ class Checkbox(db.Model):
 
     def __repr__(self):
         return f'Checkbox: <{self.checkbox_name}>'
+
+
