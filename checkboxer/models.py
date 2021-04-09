@@ -7,7 +7,7 @@ class User(db.Model):
     id: int = db.Column(db.Integer, primary_key=True)
     user_name: str = db.Column(db.String(64), index=True, unique=True)
     password_hash: str = db.Column(db.String(128))
-    checkboxlists = db.relationship('CheckboxList', backref='author', lazy='dynamic')
+    checkboxlists = db.relationship('Checkboxlist', backref='author', lazy='dynamic')
 
     def __repr__(self):
         return f'User: {self.user_name}'
@@ -24,7 +24,7 @@ class User(db.Model):
 class Checkboxlist(db.Model):
     id: int = db.Column(db.Integer, primary_key=True)
     checkbox_list_title: str = db.Column(db.String(128), index=True)
-    checkbox_privacy: bool + db.Column(db.Boolean, default=True, nullable=True)
+    checkbox_privacy: bool = db.Column(db.Boolean, default=True, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     checkbox = db.relationship('Checkbox', backref='user_checkboxer', lazy='dynamic')
 
@@ -35,5 +35,9 @@ class Checkboxlist(db.Model):
 class Checkbox(db.Model):
     id: int = db.Column(db.Integer, primary_key=True)
     checkbox_name: str = db.Column(db.String(128), index=True)
-    checkbox_status: bool + db.Column(db.Boolean, default=False, nullable=False)
+    checkbox_status: bool = db.Column(db.Boolean, default=False, nullable=False)
     checkbox_list = db.Column(db.Integer, db.ForeignKey('checkboxlist.id'))
+
+
+    def __repr__(self):
+        return f'Checkbox: <{self.checkbox_name}>'
