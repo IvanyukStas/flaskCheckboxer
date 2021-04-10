@@ -7,8 +7,13 @@
             <h1>ПРИВЕТ</h1>
             <a href="{{ url_for('add_checkbox_title') }}">Создать чекбоксер</a>
             {{ wtf.quick_form(add_user_form) }}
-
-            {% for checkbox in checkboxegit s %}
-    </div>
+            <h2>Чекбоксеры:</h2>
+            {% for checkbox in checkboxers %}
+            <a href="{{ url_for('checkboxer', checkboxer=checkbox.checkbox_list_title,
+                                id=checkbox.id) }}">
+                {{ checkbox.checkbox_list_title }}
+            </a><br>
+            {% endfor %}
+               </div>
     </div>
 {% endblock %}

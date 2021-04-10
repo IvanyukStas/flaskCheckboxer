@@ -3,8 +3,8 @@ from werkzeug.urls import url_parse
 
 from checkboxer import app, db
 from flask import redirect, url_for, render_template, flash, request
-from checkboxer.forms import UserForm, CheckboxlistForm, LoginForm, checkbox_list_form_builder
-from checkboxer.models import User, Checkboxlist
+from checkboxer.forms import UserForm, CheckboxlistForm, LoginForm, checkbox_list_form_builder, CheckboxForm
+from checkboxer.models import User, Checkboxlist, Checkbox
 
 
 @app.route('/', methods=['GET','POST'])
@@ -60,3 +60,16 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+@app.route('/checkboxer/<checkboxer>/<int:id>', methods=['GET', 'POST'])
+def checkboxer(checkboxer, id):
+    add_checkbox = CheckboxForm()
+    a = Checkbox.query. filter_by(checkbox_list=id).all()
+    if add_checkbox.validate_on_submit():
+        checkboxer = Checkboxlist.query.get(id)
+        checkbox = Checkbox(checkbox=add_checkbox.checkbox.data, user_checkboxer=id)
+        db.session.add(checkbox)
+        db.session.commit()
+        flash('Добавили новый чекбокс в чекбоксер!')
+        return redirect(url_for(checkboxer, id=id))
+    return render_template('checkbox.html', title='Чекбоксы', add_checkbox=add_checkbox)

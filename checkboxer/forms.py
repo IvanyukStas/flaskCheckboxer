@@ -18,6 +18,11 @@ class CheckboxlistForm(FlaskForm):
     submit = SubmitField('Создать')
 
 
+class CheckboxForm(FlaskForm):
+    checkbox = StringField('Название чекбоксера')
+    submit = SubmitField('Создать')
+
+
 class LoginForm(FlaskForm):
     login = StringField('Логин')
     password = PasswordField('Пароль', validators=[DataRequired()])

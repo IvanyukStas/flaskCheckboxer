@@ -1,0 +1,13 @@
+ {% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+<div class="row">
+    <div class="col-md-4">
+    {{ wtf.quick_form(add_checkbox) }}
+
+    </div>
+</div>
+{% endblock %}
+user_checkboxers = Checkboxlist.query.filter_by(user_id=user.id).all()
+form = checkbox_list_form_builder(user_checkboxers)
