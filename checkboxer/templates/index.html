@@ -1,32 +1,14 @@
 {% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
 
-{% block content %}
+{% block app_content %}
+    <div class="row">
+        <div class="col-md-4">
+            <h1>ПРИВЕТ</h1>
+            <a href="{{ url_for('add_checkbox_title') }}">Создать чекбоксер</a>
+            {{ wtf.quick_form(add_user_form) }}
 
-        <h1>ПРИВЕТ</h1>
-    <a href="{{ url_for('add_checkbox_title') }}">Создать чекбоксер</a>
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-
-            {% for message in messages %}
-                <div class="alert alert-danger w-25" role="alert">{{ message }}</div>
-            {% endfor %}
-
-        {% endif %}
-        {% endwith %}
-        <form action="" method="post" novalidate>
-        {{ add_user_form.hidden_tag() }}
-        <p>
-            {{ add_user_form.user_name.label }} <br>
-            {{ add_user_form.user_name(size=32) }}
-        </p>
-        <p>
-            {{add_user_form.password.label}}<br>
-            {{ add_user_form.password(size=32) }}
-        </p>
-        <p>
-            {{add_user_form.submit1 }}
-        </p>
-        </form>
+            {% for checkbox in checkboxegit s %}
     </div>
     </div>
 {% endblock %}

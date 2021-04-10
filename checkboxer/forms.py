@@ -1,7 +1,9 @@
 from wtforms import StringField, SelectField, SelectMultipleField, PasswordField, SubmitField, BooleanField, FieldList, \
-    FormField
+    FormField, ValidationError
 from flask_wtf import FlaskForm
 from wtforms.validators import DataRequired
+
+from checkboxer.models import User
 
 
 class UserForm(FlaskForm):
@@ -21,6 +23,11 @@ class LoginForm(FlaskForm):
     password = PasswordField('Пароль', validators=[DataRequired()])
     remember_me = BooleanField('Запомнить меня')
     submit = SubmitField('Вход')
+
+    def validate_username(self, login):
+        user = User.query.filter_by(user_name=login)
+        if not user:
+            raise ValidationError('неверный логин!')
 
 
 def checkbox_list_form_builder(filenames):

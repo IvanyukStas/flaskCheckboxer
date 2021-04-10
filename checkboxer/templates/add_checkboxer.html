@@ -1,23 +1,10 @@
 {% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
 
-{% block content %}
-    <div class="container">
+{% block app_content %}
         <div class="row">
-           <form action="" METHOD="post" novalidate>
-               {{ add_checkbox_title.hidden_tag() }}
-               <p>
-                   {{ add_checkbox_title.checkbox_list_title.label }}<br>
-                   {{ add_checkbox_title.checkbox_list_title(size=48) }}
-               </p>
-               <p>
-                   {{ add_checkbox_title.checkbox_privacy() }}   {{ add_checkbox_title.checkbox_privacy.label }}
-
-               </p>
-               <p>
-                   {{ add_checkbox_title.submit }}
-               </p>
-
-           </form>
+        <div class="col-md-4"
+        {{ wtf.quick_form(add_checkbox_title) }}
 
         </div>
     </div>

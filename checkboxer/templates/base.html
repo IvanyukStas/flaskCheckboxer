@@ -1,13 +1,48 @@
 {% extends "bootstrap/base.html" %}
-<div class="container">
-    <div class="row">
+
+
 {% block navbar %}
 
-  <a href="{{ url_for('logout') }}">Выход</a>
-<a href="{{ url_for('index') }}">Главная</a>
+<!-- Классы navbar и navbar-default (базовые классы меню) -->
+<nav class="navbar navbar-default">
+  <!-- Контейнер (определяет ширину Navbar) -->
+  <div class="container-fluid">
+    <!-- Заголовок -->
+    <div class="navbar-header">
+      <!-- Кнопка «Гамбургер» отображается только в мобильном виде (предназначена для открытия основного содержимого Navbar) -->
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-main">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <!-- Бренд или название сайта (отображается в левой части меню) -->
+
+    </div>
+    <!-- Основная часть меню (может содержать ссылки, формы и другие элементы) -->
+    <div class="collapse navbar-collapse" id="navbar-main">
+      <!-- Содержимое основной части -->
+        <a class="navbar-brand" href="{{ url_for('index') }}">Главная</a>
+        <a class="navbar-brand" href="{{ url_for('logout') }}">Выход</a>
+
+    </div>
+  </div>
+</nav>
+
+
 
 {% endblock %}
 
+{% block content %}
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-info" role="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
 
+        {# содержимое приложения которое должно быть предоставлено в блоке app_content #}
+        {% block app_content %}{% endblock %}
     </div>
-</div>
+{% endblock %}
