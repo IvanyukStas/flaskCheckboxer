@@ -24,12 +24,13 @@ def index():
                            checkboxers=checkboxers)
 
 
-@app.route('/add_checkbox_title', methods=['GET','POST'])
+@app.route('/add_checkbox_title', methods=['GET', 'POST'])
 @login_required
 def add_checkbox_title():
     add_checkbox_title = CheckboxlistForm()
     user = User.query.filter_by(user_name=current_user.user_name).first()
     if add_checkbox_title.validate_on_submit():
+        print('ХУЯЧУ')
         checkbox_title = Checkboxlist(checkbox_list_title=add_checkbox_title.checkbox_list_title.data,
                                       checkbox_privacy=add_checkbox_title.checkbox_privacy.data,
                                       author=user)
@@ -61,15 +62,39 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
+
 @app.route('/checkboxer/<checkboxer>/<int:id>', methods=['GET', 'POST'])
 def checkboxer(checkboxer, id):
     add_checkbox = CheckboxForm()
-    a = Checkbox.query. filter_by(checkbox_list=id).all()
-    if add_checkbox.validate_on_submit():
-        checkboxer = Checkboxlist.query.get(id)
-        checkbox = Checkbox(checkbox=add_checkbox.checkbox.data, user_checkboxer=id)
+    checkboxer = Checkboxlist.query.get(id)
+    get_checkbox_for_dynamic_build = Checkbox.query.filter_by(checkbox_list=id).all()
+    if get_checkbox_for_dynamic_build:
+        dynamic_checkbox_builder = checkbox_list_form_builder(get_checkbox_for_dynamic_build)
+    else:
+        dynamic_checkbox_builder = None
+    if add_checkbox.validate_on_submit() and add_checkbox.submit_add.data:
+        if not add_checkbox.checkbox.data:
+            flash('Заполните название чекбокса!!!')
+            return redirect(url_for('checkboxer', checkboxer=checkboxer.checkbox_list_title,
+                                    id=checkboxer.id))
+        checkbox = Checkbox(checkbox_name=add_checkbox.checkbox.data, user_checkboxer=checkboxer)
         db.session.add(checkbox)
         db.session.commit()
         flash('Добавили новый чекбокс в чекбоксер!')
-        return redirect(url_for(checkboxer, id=id))
-    return render_template('checkbox.html', title='Чекбоксы', add_checkbox=add_checkbox)
+        return redirect(url_for('checkboxer', checkboxer=checkboxer.checkbox_list_title,
+                                id=checkboxer.id))
+    if request.method == "POST" and request:
+        data = request.form
+        for checkboxer_id in get_checkbox_for_dynamic_build:
+            for x in data:
+                checkbox = Checkbox.query.get(checkboxer_id.id)
+                if x.isdigit() and checkboxer_id.id == int(x):
+                    checkbox.checkbox_status = 1
+                    break
+                else:
+                    checkbox.checkbox_status = 0
+            db.session.add(checkbox)
+            db.session.commit()
+    return render_template('checkbox.html', title='Чекбоксы', add_checkbox=add_checkbox,
+                           dynamic_checkbox_builder=dynamic_checkbox_builder,
+                           checkboxer=checkboxer)

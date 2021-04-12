@@ -19,8 +19,10 @@ class CheckboxlistForm(FlaskForm):
 
 
 class CheckboxForm(FlaskForm):
-    checkbox = StringField('Название чекбоксера')
-    submit = SubmitField('Создать')
+    checkbox = StringField('Название чекбокса')
+    submit_add = SubmitField('Создать')
+
+
 
 
 class LoginForm(FlaskForm):
@@ -37,10 +39,10 @@ class LoginForm(FlaskForm):
 
 def checkbox_list_form_builder(filenames):
     class CheckboxListForm(FlaskForm):
-
-        submit = SubmitField('Записать')
-
+        pass
     for (i, filename) in enumerate(filenames):
-        setattr(CheckboxListForm, 'filename_%d' % i, BooleanField(label=filename.checkbox_list_title))
-
+        setattr(CheckboxListForm, f'{filename.id}', BooleanField(label=filename.checkbox_name,
+                                                        default=filename.checkbox_status,
+                                                         false_values=('False', 'false', '')))
+    setattr(CheckboxListForm, 'submit_write_checkbox_status', SubmitField('Записать'))
     return CheckboxListForm()

@@ -4,10 +4,17 @@
 {% block app_content %}
 <div class="row">
     <div class="col-md-4">
-    {{ wtf.quick_form(add_checkbox) }}
+    {{ wtf.quick_form(add_checkbox, action=url_for('checkboxer', checkboxer=checkboxer.checkbox_list_title,
+                                id=checkboxer.id)) }}
 
     </div>
+    {% if not dynamic_checkbox_builder == None %}
+<div class="col-md-4">
+
+    {{ wtf.quick_form(dynamic_checkbox_builder) }}
+
+    </div>
+{% endif %}
 </div>
 {% endblock %}
-user_checkboxers = Checkboxlist.query.filter_by(user_id=user.id).all()
-form = checkbox_list_form_builder(user_checkboxers)
+

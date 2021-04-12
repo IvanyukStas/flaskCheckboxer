@@ -35,13 +35,13 @@ class Checkboxlist(db.Model):
     checkbox = db.relationship('Checkbox', backref='user_checkboxer', lazy='dynamic')
 
     def __repr__(self):
-        return f'Checkbox: <{self.checkbox_list_title}>'
+        return f'Checkboxer: <{self.checkbox_list_title}>'
 
 
 class Checkbox(db.Model):
     id: int = db.Column(db.Integer, primary_key=True)
     checkbox_name: str = db.Column(db.String(128), index=True)
-    checkbox_status: bool = db.Column(db.Boolean, default=False, nullable=False)
+    checkbox_status: str = db.Column(db.Integer, default=0, nullable=False)
     checkbox_list = db.Column(db.Integer, db.ForeignKey('checkboxlist.id'))
 
 

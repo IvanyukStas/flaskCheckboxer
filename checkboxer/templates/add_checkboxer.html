@@ -4,7 +4,7 @@
 {% block app_content %}
         <div class="row">
         <div class="col-md-4"
-        {{ wtf.quick_form(add_checkbox_title) }}
+        {{ wtf.quick_form(add_checkbox_title, action=url_for('add_checkbox_title')) }}
 
         </div>
     </div>
