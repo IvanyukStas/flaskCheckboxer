@@ -43,6 +43,7 @@ def checkbox_list_form_builder(filenames):
     for (i, filename) in enumerate(filenames):
         setattr(CheckboxListForm, f'{filename.id}', BooleanField(label=filename.checkbox_name,
                                                         default=filename.checkbox_status,
-                                                         false_values=('False', 'false', '')))
-    setattr(CheckboxListForm, 'submit_write_checkbox_status', SubmitField('Записать'))
+                                                        render_kw={'class': 'myclass'}
+                                                        ))
+
     return CheckboxListForm()

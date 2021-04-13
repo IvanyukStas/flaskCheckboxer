@@ -1,10 +1,11 @@
 import json
 
+from flask_json import json_response
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
 from checkboxer import app, db
-from flask import redirect, url_for, render_template, flash, request
+from flask import redirect, url_for, render_template, flash, request, jsonify
 from checkboxer.forms import UserForm, CheckboxlistForm, LoginForm, checkbox_list_form_builder, CheckboxForm
 from checkboxer.models import User, Checkboxlist, Checkbox
 
@@ -102,7 +103,13 @@ def checkboxer(checkboxer, id):
                            checkboxer=checkboxer)
 
 @app.route('/js', methods=['POST'])
+
 def js():
     data = request.get_json(force=True)
-    print(data)
-    return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+    checkbox = Checkbox.query.filter_by(id=data['id']).first()
+    checkbox.checkbox_status = data['instanse']
+    db.session.add(checkbox)
+    db.session.commit()
+    a = {'id':'1', 'instanse':'False'}
+    return json_response(data_=a)
+    #return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}

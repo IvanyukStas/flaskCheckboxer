@@ -22,19 +22,35 @@
 {% block scripts %}
 {{ super() }}
     <script>
-    document.addEventListener('click', function (e){
+        $(function () {
+    $(":checkbox").click(function (e) {
+        mydata = {'id':e.target.id, 'instanse':$(e.target).prop('checked')}
+        console.log(mydata)
+       $.ajax({
+	      method: "POST", // метод HTTP, используемый для запроса
+	      url: "{{ url_for('js') }}", // строка, содержащая URL адрес, на который отправляется запрос
+	      data: JSON.stringify(mydata),
+	      success: [function ( msg ) { // функции обратного вызова, которые вызываются если AJAX запрос выполнится успешно (если несколько функций, то необходимо помещать их в массив)
+	        $( "p" ).text( "User saved: " + msg ); // добавляем текстовую информацию и данные возвращенные с сервера
+	      },
+	      function () { // вызов второй функции из массива
+	        console.log( "next function" );
+	      },
+          function(data){
+       var json = $.parseJSON(data); // create an object with the key of the array
+       console.log(json); // where html is the key of array that you want, $response['html'] = "<a>something..</a>";
+    }
+    ],
+	      statusCode: {
+	        200: function () { // выполнить функцию если код ответа HTTP 200
+	          console.log( "Ok" );
+	        }
+	      }
+	    })
+	  });
+	});
 
-        if( e.target.type === 'checkbox'){
-            console.log(e.target.id);
-            let xhr = new XMLHttpRequest();
-            let url = 'http://127.0.0.1:5000/js';
-            xhr.open('POST', url, true);
-            xhr.setRequestHeader("Content-Type", "application/json");
-            var myData  = {'id':e.target.id, 'value':e.target.value}
-            var data = JSON.stringify(myData);
-            xhr.send(data);
-        }
-    });
+
     </script>
 
 
