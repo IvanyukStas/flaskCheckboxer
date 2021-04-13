@@ -1,3 +1,5 @@
+import json
+
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
@@ -98,3 +100,9 @@ def checkboxer(checkboxer, id):
     return render_template('checkbox.html', title='Чекбоксы', add_checkbox=add_checkbox,
                            dynamic_checkbox_builder=dynamic_checkbox_builder,
                            checkboxer=checkboxer)
+
+@app.route('/js', methods=['POST'])
+def js():
+    data = request.get_json(force=True)
+    print(data)
+    return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}

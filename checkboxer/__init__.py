@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_bootstrap import Bootstrap
+from flask_json import FlaskJSON
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
@@ -19,6 +20,8 @@ migrate = Migrate(app, db)
 login = LoginManager(app)
 login.login_view = 'login'
 bootstrap = Bootstrap(app)
+json = FlaskJSON(app)
+
 
 
 from checkboxer import routes, models
