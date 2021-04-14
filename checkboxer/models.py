@@ -41,7 +41,7 @@ class Checkboxlist(db.Model):
 class Checkbox(db.Model):
     id: int = db.Column(db.Integer, primary_key=True)
     checkbox_name: str = db.Column(db.String(128), index=True)
-    checkbox_status: str = db.Column(db.Integer, default=0, nullable=False)
+    checkbox_status: int = db.Column(db.Integer, default=0, nullable=False)
     checkbox_list = db.Column(db.Integer, db.ForeignKey('checkboxlist.id'))
 
 

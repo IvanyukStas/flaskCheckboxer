@@ -1,10 +1,11 @@
-import json
+
 
 from flask_json import json_response
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
-from checkboxer import app, db
+from checkboxer import app, db, json
+from sqlalchemy import desc
 from flask import redirect, url_for, render_template, flash, request, jsonify
 from checkboxer.forms import UserForm, CheckboxlistForm, LoginForm, checkbox_list_form_builder, CheckboxForm
 from checkboxer.models import User, Checkboxlist, Checkbox
@@ -15,7 +16,7 @@ from checkboxer.models import User, Checkboxlist, Checkbox
 @login_required
 def index():
     add_user_form = UserForm()
-    checkboxers = Checkboxlist.query.filter_by(user_id=current_user.id).all()
+    checkboxers = Checkboxlist.query.filter_by(user_id=current_user.id).order_by(desc(Checkboxlist.checkbox_list_title)).all()
     if add_user_form.validate_on_submit():
         user = User(user_name=add_user_form.user_name.data)
         user.set_password(add_user_form.password.data)
@@ -70,7 +71,7 @@ def logout():
 def checkboxer(checkboxer, id):
     add_checkbox = CheckboxForm()
     checkboxer = Checkboxlist.query.get(id)
-    get_checkbox_for_dynamic_build = Checkbox.query.filter_by(checkbox_list=id).all()
+    get_checkbox_for_dynamic_build = Checkbox.query.filter_by(checkbox_list=id).order_by(Checkbox.checkbox_status).all()
     if get_checkbox_for_dynamic_build:
         dynamic_checkbox_builder = checkbox_list_form_builder(get_checkbox_for_dynamic_build)
     else:
@@ -86,23 +87,11 @@ def checkboxer(checkboxer, id):
         flash('Добавили новый чекбокс в чекбоксер!')
         return redirect(url_for('checkboxer', checkboxer=checkboxer.checkbox_list_title,
                                 id=checkboxer.id))
-    if request.method == "POST" and request:
-        data = request.form
-        for checkboxer_id in get_checkbox_for_dynamic_build:
-            for x in data:
-                checkbox = Checkbox.query.get(checkboxer_id.id)
-                if x.isdigit() and checkboxer_id.id == int(x):
-                    checkbox.checkbox_status = 1
-                    break
-                else:
-                    checkbox.checkbox_status = 0
-            db.session.add(checkbox)
-            db.session.commit()
     return render_template('checkbox.html', title='Чекбоксы', add_checkbox=add_checkbox,
                            dynamic_checkbox_builder=dynamic_checkbox_builder,
                            checkboxer=checkboxer)
 
-@app.route('/js', methods=['POST'])
+@app.route('/js', methods=['GET','POST'])
 
 def js():
     data = request.get_json(force=True)
@@ -112,4 +101,14 @@ def js():
     db.session.commit()
     a = {'id':'1', 'instanse':'False'}
     return json_response(data_=a)
-    #return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+
+@json.error_handler
+def error_handler(e):
+    # e - JsonError.
+    return render_template('404.html')
